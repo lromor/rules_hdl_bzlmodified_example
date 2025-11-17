@@ -19,18 +19,21 @@ synthesize_rtl(
 )
 
 place_and_route(
-    name = "adder_place_and_route_sky130",
+    name = "adder_place_and_route_sky130_sample",
     # ~0.67 GHz
-    #clock_period = "1.5",
+    clock_period = "1.5",
     core_padding_microns = 2,
     die_height_microns = 150,
     die_width_microns = 150,
     min_pin_distance = "2",
     placement_density = "0.7",
     synthesized_rtl = ":adder_synth_sky130",
+    clocks = {
+        "clk": "1.5",
+    },
 )
 
 gds_write(
     name = "adder_gds_sky130",
-    implemented_rtl = ":adder_place_and_route_sky130",
+    implemented_rtl = ":adder_place_and_route_sky130_sample",
 )
