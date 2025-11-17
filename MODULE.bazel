@@ -1,0 +1,133 @@
+module(
+    name = "example",
+    version = "0.0.0",
+)
+
+# Custom patches with our fixes. Some of these are transitive deps.
+# It's still necessary to override them here.
+git_override(
+    module_name = "p7zip",
+    commit = "be778d8e29b3f21bd3b0c661be0d4f4ab49d3ffa",
+    remote = "https://github.com/amorphic-io/7zip.git",
+)
+git_override(
+    module_name = "prjtrellis",
+    commit = "3332d029295a8e424969126f5c61a5ea111882a8",
+    remote = "https://github.com/amorphic-io/prjtrellis.git",
+)
+git_override(
+    module_name = "icestorm",
+    commit = "85fd1682b58581b82d1d14f63c089fb033177c21",
+    remote = "https://github.com/amorphic-io/icestorm.git",
+)
+git_override(
+    module_name = "nextpnr",
+    commit = "2ab1f5e7e6be52e2a59347cace86f5c16348a115",
+    remote = "https://github.com/amorphic-io/nextpnr.git",
+)
+git_override(
+    module_name = "cxxopts",
+    commit = "0fc4bdab71ea25e3623e2b609b4e5b2bd20bb938",
+    remote = "https://github.com/amorphic-io/cxxopts.git",
+)
+git_override(
+    module_name = "yosys",
+    commit = "590ad236368e41af3de4ea8252811beeaadb5f97",
+    remote = "https://github.com/amorphic-io/yosys.git",
+    init_submodules = True,
+)
+git_override(
+    module_name = "swig",
+    commit = "52ed25274e9042611bda40c42e48aae8b6748686",
+    remote = "https://github.com/amorphic-io/swig.git",
+)
+git_override(
+    module_name = "iverilog",
+    commit = "760dfa28d8f863164a2fbbaabebd1202850249c8",
+    remote = "https://github.com/amorphic-io/iverilog.git",
+)
+git_override(
+    module_name = "lemon",
+    commit = "f8be7b96fbdfa789a4dae0429967b7724e89d5f5",
+    remote = "https://github.com/amorphic-io/lemon",
+)
+git_override(
+    module_name = "abc",
+    commit = "2fa8f6e551a85da586fbe01792e6cfdaa7ce72cc",
+    remote = "https://github.com/amorphic-io/abc",
+)
+git_override(
+    module_name = "ncurses",
+    commit = "f918fafc9f7aeb1745d02e7978597abf8e580de2",
+    remote = "https://github.com/amorphic-io/ncurses",
+)
+git_override(
+    module_name = "llvm-project",
+    commit = "93c4a9c7b9d2fef50ad97c80efa54ccaed7df0c8",
+    remote = "https://github.com/amorphic-io/llvm-project",
+)
+git_override(
+    module_name = "tcl",
+    commit = "e285aca41d39e84ab1753f125b095d65a0e15640",
+    remote = "https://github.com/amorphic-io/tcl.git",
+)
+git_override(
+    module_name = "openroad",
+    commit = "c80e4b3f54dd94cdbebfecc3c98a64049b8c7efc",
+    remote = "https://github.com/amorphic-io/OpenROAD",
+    init_submodules = True,
+)
+git_override(
+    module_name = "bazel-orfs",
+    commit = "126765508161956f8f82ae169084da0235230637",
+    remote = "https://github.com/The-OpenROAD-Project/bazel-orfs.git",
+)
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(
+    ignore_root_user_error = True,
+    is_default = False,
+    python_version = "3.11",
+)
+python.toolchain(
+    ignore_root_user_error = True,
+    is_default = False,
+    python_version = "3.13",
+)
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+pip.parse(
+    hub_name = "rules_hdl_pip_deps",
+    python_version = "3.11",
+    requirements_lock = "@rules_hdl//dependency_support:pip_requirements.txt",
+)
+use_repo(pip, "rules_hdl_pip_deps")
+
+register_toolchains("//verilator:verilator_toolchain")
+
+hdl = use_extension("@rules_hdl//:extensions.bzl", "hdl_ext")
+hdl.skywater_pdk(
+    name = "com_google_skywater_pdk",
+    libraries = [
+        "sky130_fd_io",
+        "sky130_fd_sc_hd",
+    ],
+)
+
+use_repo(hdl, "com_google_skywater_pdk")
+use_repo(hdl, "com_google_skywater_pdk_sky130_fd_io")
+use_repo(hdl, "com_google_skywater_pdk_sky130_fd_sc_hd")
+
+hdl.asap7_pdk(
+    name = "org_theopenroadproject_asap7_pdk",
+    libraries = [
+        "sc6t_26",
+        "sc7p5t_27",
+        "sc7p5t_28",
+    ],
+)
+
+use_repo(hdl, "org_theopenroadproject_asap7_pdk")
+use_repo(hdl, "org_theopenroadproject_asap7_pdk_sc7p5t_28")
+use_repo(hdl, "org_theopenroadproject_asap7_pdk_sc6t_26")
+use_repo(hdl, "org_theopenroadproject_asap7_pdk_sc7p5t_27")
