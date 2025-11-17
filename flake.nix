@@ -1,5 +1,5 @@
 {
-  description = "fpga-assembler";
+  description = "rules_hdl_bzlmodified";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/2c8d3f48d33929642c1c12cd243df4cc7d2ce434";
